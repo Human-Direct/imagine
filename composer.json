@@ -1,0 +1,6 @@
+{
+    "require": {
+        "unsplash/unsplash": "^2.4",
+        "intervention/image": "^2.4"
+    }
+}
