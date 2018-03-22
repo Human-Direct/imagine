@@ -11,23 +11,124 @@ $imageUrl = get_redirect_target($featuredImageUrl);
 
 [$w, $h] = getMediaDimensions('facebook_highlighted_image');
 
-$manager = new ImageManager(['driver' => 'gd']);
+$manager = new ImageManager(['driver' => 'imagick']);
 $image = $manager
     ->make($imageUrl)
     ->crop($w, $h);
-$image->insert($imageUrl, 'center');
-$image->insert('hd-watermark-300w.png', 'center');
-//$image->rectangle(0, 0, $w, $h, function ($draw) {
-//    $draw->background('rgba(0, 0, 0, 0.2)');
-//});
+//->insert($imageUrl, 'center');
 
-// create a new image resource
-//$resource = $image->canvas($w, $h, '#ffffff');
+$rectW = $w / 3;
+$rectH = ($h / 3) * 2;
+$image->rectangle(0, 0, $rectW, $rectH, function ($draw) {
+    //$draw->background('rgba(27, 179, 219, 0.5)'); // light blue
+    $draw->background('rgba(255, 255, 255, 0.8)');
+});
+
+$blueTopLeftX = 0;
+$blueTopLeftY = $h;
+$blueBottomRightX = $rectW;
+$blueBottomRightY = $h-$h/3;
+$image->rectangle($blueTopLeftX, $blueTopLeftY, $blueBottomRightX, $blueBottomRightY, function ($draw) {
+    $draw->background('rgba(27, 179, 219, 0.8)'); // light blue
+});
+
+$logoInfo = getLogoInfo('horizontal');
+
+// calculate logo to center of rectangle
+//$centerPadLogo = ($rectW - $logoInfo['width']) / 2;
+
+$padLeft = 30;
+$padTop = 30;
+
+$logoPadLeft = $padLeft;
+$logoPadTop = $padTop;
+$image->insert($logoInfo['path'], 'top-left', $logoPadLeft, $logoPadTop);
+
+// Add title
+$textPadLeft = $padLeft;
+$titlePadTop = $padTop * 3 + $logoInfo['height'];
+$titleSize = 24;
+$image->text('Full Stack Developer', $textPadLeft, $titlePadTop, function ($font) use ($titleSize) {
+    $font->file('fonts/SourceSansPro-Bold.otf');
+    $font->size($titleSize);
+    $font->color('rgb(43, 57, 132)');
+    $font->align('left');
+    $font->valign('top');
+});
+
+$description = 'How does it sound to develop the most innovative SD-WAN solution on the market?
+This Full Stack position encompasses the use of the latest frontend technologies (Angular 4, Node.js) with technical challenges concerning cloud centric, high scalability and performance.';
+
+$descSize = 16;
+//$descPadTop = $titlePadTop + $titleSize + $padTop;
+$descPadTop = $titlePadTop - 30;
+$image->text(utf8_wordwrap($description), $textPadLeft, $descPadTop, function ($font) use ($descSize) {
+    $font->file('fonts/SourceSansPro-Regular.otf');
+    $font->size($descSize);
+    $font->color('#000000');
+    $font->align('left');
+    $font->valign('top');
+});
+
+// consultant data
+$avatarInfo = getImageInfo('ana-small.jpg');
+
+$avatarW = 120;
+$avatarH = 120;
+$avatarPadLeft = ($rectW - $avatarW) / 2;
+$avatarPadTop = $blueBottomRightY + 20;
+
+$avatar = $manager
+    ->make($avatarInfo['path'])
+    ->resize($avatarW, $avatarH);
+$image->insert($avatar, 'top-left', $avatarPadLeft, $avatarPadTop);
+$image->rectangle($avatarPadLeft, $avatarPadTop, $avatarPadLeft+$avatarW, $avatarPadTop+$avatarH, function ($draw) {
+    $draw->border(2, 'rgb(43, 57, 132)');
+});
 
 // send HTTP header and output image data
-//echo $resource->response('jpg', 100);
-header('Content-Type: image/jpg');
-echo $image->encode('jpg', 100);
+echo $image->response('jpg', 100);
+
+function utf8_wordwrap($string, $width = 50, $break = "\n", $cut = false)
+{
+    if ($cut) {
+        // Match anything 1 to $width chars long followed by whitespace or EOS,
+        // otherwise match anything $width chars long
+        $pattern = '/(.{1,' . $width . '})(?:\s|$)|(.{' . $width . '})/uS';
+        $replace = '$1$2' . $break;
+    } else {
+        // Anchor the beginning of the pattern with a lookahead
+        // to avoid crazy backtracking when words are longer than $width
+        $pattern = '/(?=\s)(.{1,' . $width . '})(?:\s|$)/uS';
+        $replace = '$1' . $break;
+    }
+
+    return preg_replace($pattern, $replace, $string);
+}
+
+function getLogoInfo($type)
+{
+    $logo = 'hd-watermark-300w.png';
+    if ('horizontal' === $type) {
+        $logo = 'hd-horizontal-watermark-300w.png';
+    }
+
+    return getImageInfo($logo);
+}
+
+function getImageInfo($imagePath)
+{
+    $image = realpath(sprintf('images/%s', $imagePath));
+
+    [$width, $height, $type] = getimagesize($image);
+
+    return [
+        'path' => $image,
+        'width' => $width,
+        'height' => $height,
+        'type' => $type,
+    ];
+}
 
 /**
  * @see https://postcron.com/en/blog/infographics-social-media-image-sizes/
@@ -37,7 +138,8 @@ echo $image->encode('jpg', 100);
  * @return array
  * @throws Exception
  */
-function getMediaDimensions(string $type) {
+function getMediaDimensions(string $type)
+{
     switch ($type) {
         case 'facebook_shared_image':
             return [1200, 630];
@@ -55,7 +157,7 @@ function getMediaDimensions(string $type) {
             return [520, 272];
     }
 
-    throw new \Exception('Unsupported media type');
+    throw new \Exception('Unsupported media type.');
 }
 
 
