@@ -2,6 +2,7 @@
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 
+use Intervention\Image\AbstractFont;
 use Intervention\Image\ImageManager;
 
 require_once 'vendor/autoload.php';
@@ -18,7 +19,7 @@ $image = $manager
 //->insert($imageUrl, 'center');
 
 $rectW = $w / 3;
-$rectH = ($h / 3) * 2;
+$rectH = (int) floor($h * 1.6);
 $image->rectangle(0, 0, $rectW, $rectH, function ($draw) {
     //$draw->background('rgba(27, 179, 219, 0.5)'); // light blue
     $draw->background('rgba(255, 255, 255, 0.8)');
@@ -27,7 +28,7 @@ $image->rectangle(0, 0, $rectW, $rectH, function ($draw) {
 $blueTopLeftX = 0;
 $blueTopLeftY = $h;
 $blueBottomRightX = $rectW;
-$blueBottomRightY = $h-$h/3;
+$blueBottomRightY = abs($rectH - $h);
 $image->rectangle($blueTopLeftX, $blueTopLeftY, $blueBottomRightX, $blueBottomRightY, function ($draw) {
     $draw->background('rgba(27, 179, 219, 0.8)'); // light blue
 });
@@ -48,7 +49,7 @@ $image->insert($logoInfo['path'], 'top-left', $logoPadLeft, $logoPadTop);
 $textPadLeft = $padLeft;
 $titlePadTop = $padTop * 3 + $logoInfo['height'];
 $titleSize = 24;
-$image->text('Full Stack Developer', $textPadLeft, $titlePadTop, function ($font) use ($titleSize) {
+$image->text('Full Stack Developer', $textPadLeft, $titlePadTop, function (AbstractFont $font) use ($titleSize) {
     $font->file('fonts/SourceSansPro-Bold.otf');
     $font->size($titleSize);
     $font->color('rgb(43, 57, 132)');
@@ -62,7 +63,7 @@ This Full Stack position encompasses the use of the latest frontend technologies
 $descSize = 16;
 //$descPadTop = $titlePadTop + $titleSize + $padTop;
 $descPadTop = $titlePadTop - 30;
-$image->text(utf8_wordwrap($description), $textPadLeft, $descPadTop, function ($font) use ($descSize) {
+$image->text(utf8_wordwrap($description), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
     $font->file('fonts/SourceSansPro-Regular.otf');
     $font->size($descSize);
     $font->color('#000000');
@@ -84,6 +85,43 @@ $avatar = $manager
 $image->insert($avatar, 'top-left', $avatarPadLeft, $avatarPadTop);
 $image->rectangle($avatarPadLeft, $avatarPadTop, $avatarPadLeft+$avatarW, $avatarPadTop+$avatarH, function ($draw) {
     $draw->border(2, 'rgb(43, 57, 132)');
+});
+
+$nameSize = 20;
+$textPadLeft = $avatarPadLeft + $avatarW/2;
+$namePadTop = $avatarPadTop + $avatarH + 20;
+$image->text('Ana Sandu', $textPadLeft, $namePadTop, function (AbstractFont $font) use ($nameSize) {
+    $font->file('fonts/SourceSansPro-Bold.otf');
+    $font->size($nameSize);
+    $font->color('#ffffff');
+    $font->align('center');
+    $font->valign('top');
+});
+
+$infoSize = 18;
+$emailPadTop = $namePadTop + $nameSize + 20;
+$image->text('ana.sandu@humandirect.eu', $textPadLeft, $emailPadTop, function (AbstractFont $font) use ($infoSize) {
+    $font->file('fonts/SourceSansPro-Regular.otf');
+    $font->size($infoSize);
+    $font->color('#ffffff');
+    $font->align('center');
+    $font->valign('top');
+});
+$phonePadTop = $emailPadTop + $infoSize + 5;
+$image->text('+40723370850', $textPadLeft, $phonePadTop, function (AbstractFont $font) use ($infoSize) {
+    $font->file('fonts/SourceSansPro-Regular.otf');
+    $font->size($infoSize);
+    $font->color('#ffffff');
+    $font->align('center');
+    $font->valign('top');
+});
+$skypePadTop = $phonePadTop + $infoSize + 5;
+$image->text('Skype: ana.sandu_2', $textPadLeft, $skypePadTop, function (AbstractFont $font) use ($infoSize) {
+    $font->file('fonts/SourceSansPro-Regular.otf');
+    $font->size($infoSize);
+    $font->color('#ffffff');
+    $font->align('center');
+    $font->valign('top');
 });
 
 // send HTTP header and output image data
