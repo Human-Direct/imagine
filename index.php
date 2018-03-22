@@ -1,24 +1,62 @@
 <?php
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
 
 use Intervention\Image\ImageManager;
 
 require_once 'vendor/autoload.php';
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
 
 $featuredImageUrl = 'https://source.unsplash.com/featured?internet,office,computer';
 $imageUrl = get_redirect_target($featuredImageUrl);
-var_dump($imageUrl);
-exit;
+
+[$w, $h] = getMediaDimensions('facebook_highlighted_image');
 
 $manager = new ImageManager(['driver' => 'gd']);
+$image = $manager
+    ->make($imageUrl)
+    ->crop($w, $h);
+$image->insert($imageUrl, 'center');
+$image->insert('hd-watermark-300w.png', 'center');
+//$image->rectangle(0, 0, $w, $h, function ($draw) {
+//    $draw->background('rgba(0, 0, 0, 0.2)');
+//});
 
-$image = $manager->make($featuredImageUrl)->resize(1200, 1200);
-$image->insert('hd-watermark-300x300.png');
+// create a new image resource
+//$resource = $image->canvas($w, $h, '#ffffff');
 
-header('Content-Type:' . $image->mime);
-header('Content-Length: ' . filesize($image));
-readfile($image);
+// send HTTP header and output image data
+//echo $resource->response('jpg', 100);
+header('Content-Type: image/jpg');
+echo $image->encode('jpg', 100);
+
+/**
+ * @see https://postcron.com/en/blog/infographics-social-media-image-sizes/
+ *
+ * @param string $type
+ *
+ * @return array
+ * @throws Exception
+ */
+function getMediaDimensions(string $type) {
+    switch ($type) {
+        case 'facebook_shared_image':
+            return [1200, 630];
+        case 'facebook_shared_link':
+            return [1200, 627];
+        case 'facebook_highlighted_image':
+            return [1200, 717];
+        case 'twitter_shared_image':
+            return [1024, 512];
+        case 'twitter_shared_link':
+            return [520, 254];
+        case 'linkedin_shared_image':
+            return [520, 320];
+        case 'linkedin_shared_link':
+            return [520, 272];
+    }
+
+    throw new \Exception('Unsupported media type');
+}
 
 
 // FOLLOW A SINGLE REDIRECT:
