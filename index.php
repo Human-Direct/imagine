@@ -2,15 +2,27 @@
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 
+use HumanDirect\Imagine\UnsplashImage;
 use Intervention\Image\AbstractFont;
 use Intervention\Image\ImageManager;
 
 require_once 'vendor/autoload.php';
 
-$featuredImageUrl = 'https://source.unsplash.com/featured?internet,office,computer';
-$imageUrl = get_redirect_target($featuredImageUrl);
+$unsplashImage = UnsplashImage::createFromSource(UnsplashImage::SOURCE_RANDOM);
+$imageUrl = $unsplashImage->getUrl();
 
+[$initW, $initH]  = getMediaDimensions('facebook_highlighted_image');
 [$w, $h] = getMediaDimensions('facebook_highlighted_image');
+
+$startW = $w;
+$startH = $h;
+$needsResize = false;
+
+if ($initW !== $w || $initH !== $h) {
+    $w = $initW;
+    $h = $initH;
+    $needsResize = true;
+}
 
 $manager = new ImageManager(['driver' => 'imagick']);
 $image = $manager
@@ -19,7 +31,7 @@ $image = $manager
 //->insert($imageUrl, 'center');
 
 $rectW = $w / 3;
-$rectH = (int) floor($h * 1.6);
+$rectH = (int)floor($h * 1.6);
 $image->rectangle(0, 0, $rectW, $rectH, function ($draw) {
     //$draw->background('rgba(27, 179, 219, 0.5)'); // light blue
     $draw->background('rgba(255, 255, 255, 0.8)');
@@ -47,9 +59,9 @@ $image->insert($logoInfo['path'], 'top-left', $logoPadLeft, $logoPadTop);
 
 // Add title
 $textPadLeft = $padLeft;
-$titlePadTop = $padTop * 3 + $logoInfo['height'];
+$titlePadTop = $padTop * 3 + $logoInfo['height'] / 2;
 $titleSize = 24;
-$image->text('Full Stack Developer', $textPadLeft, $titlePadTop, function (AbstractFont $font) use ($titleSize) {
+$image->text(utf8_wordwrap('Front-End JavaScript Developer/Team Lead', 25), $textPadLeft, $titlePadTop, function (AbstractFont $font) use ($titleSize) {
     $font->file('fonts/SourceSansPro-Bold.otf');
     $font->size($titleSize);
     $font->color('rgb(43, 57, 132)');
@@ -62,8 +74,8 @@ This Full Stack position encompasses the use of the latest frontend technologies
 
 $descSize = 16;
 //$descPadTop = $titlePadTop + $titleSize + $padTop;
-$descPadTop = $titlePadTop - 30;
-$image->text(utf8_wordwrap($description), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
+$descPadTop = $titlePadTop - 10;
+$image->text(utf8_wordwrap(text_truncate($description)), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
     $font->file('fonts/SourceSansPro-Regular.otf');
     $font->size($descSize);
     $font->color('#000000');
@@ -76,19 +88,19 @@ $avatarInfo = getImageInfo('ana-small.jpg');
 
 $avatarW = 120;
 $avatarH = 120;
-$avatarPadLeft = ($rectW - $avatarW) / 2;
+$avatarPadLeft = (int)floor(($rectW - $avatarW) / 2);
 $avatarPadTop = $blueBottomRightY + 20;
 
 $avatar = $manager
     ->make($avatarInfo['path'])
     ->resize($avatarW, $avatarH);
 $image->insert($avatar, 'top-left', $avatarPadLeft, $avatarPadTop);
-$image->rectangle($avatarPadLeft, $avatarPadTop, $avatarPadLeft+$avatarW, $avatarPadTop+$avatarH, function ($draw) {
+$image->rectangle($avatarPadLeft, $avatarPadTop, $avatarPadLeft + $avatarW, $avatarPadTop + $avatarH, function ($draw) {
     $draw->border(2, 'rgb(43, 57, 132)');
 });
 
 $nameSize = 20;
-$textPadLeft = $avatarPadLeft + $avatarW/2;
+$textPadLeft = $avatarPadLeft + (int)floor($avatarW / 2);
 $namePadTop = $avatarPadTop + $avatarH + 20;
 $image->text('Ana Sandu', $textPadLeft, $namePadTop, function (AbstractFont $font) use ($nameSize) {
     $font->file('fonts/SourceSansPro-Bold.otf');
@@ -124,10 +136,15 @@ $image->text('Skype: ana.sandu_2', $textPadLeft, $skypePadTop, function (Abstrac
     $font->valign('top');
 });
 
+// needs resizing after image is composed
+if ($needsResize) {
+    $image->resize($startW, $startH);
+}
+
 // send HTTP header and output image data
 echo $image->response('jpg', 100);
 
-function utf8_wordwrap($string, $width = 50, $break = "\n", $cut = false)
+function utf8_wordwrap($string, $width = 45, $break = "\n", $cut = false)
 {
     if ($cut) {
         // Match anything 1 to $width chars long followed by whitespace or EOS,
@@ -142,6 +159,25 @@ function utf8_wordwrap($string, $width = 50, $break = "\n", $cut = false)
     }
 
     return preg_replace($pattern, $replace, $string);
+}
+
+function text_truncate($string, $desiredlength = 300)
+{
+    $parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
+    $parts_count = count($parts);
+
+    $length = 0;
+    $last_part = 0;
+    $truncated = false;
+    for (; $last_part < $parts_count; ++$last_part) {
+        $length += strlen($parts[$last_part]);
+        if ($length > $desiredlength) {
+            $truncated = true;
+            break;
+        }
+    }
+
+    return implode(array_slice($parts, 0, $last_part)) . ($truncated ? ' ...' : '');
 }
 
 function getLogoInfo($type)
@@ -196,46 +232,4 @@ function getMediaDimensions(string $type)
     }
 
     throw new \Exception('Unsupported media type.');
-}
-
-
-// FOLLOW A SINGLE REDIRECT:
-// This makes a single request and reads the "Location" header to determine the
-// destination. It doesn't check if that location is valid or not.
-function get_redirect_target($url)
-{
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_HEADER, 1);
-    curl_setopt($ch, CURLOPT_NOBODY, 1);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $headers = curl_exec($ch);
-    curl_close($ch);
-
-    // Check if there's a Location: header (redirect)
-    if (preg_match('/^Location: (.+)$/im', $headers, $matches)) {
-        return trim($matches[1]);
-    }
-    // If not, there was no redirect so return the original URL
-    // (Alternatively change this to return false)
-    return $url;
-}
-
-// FOLLOW ALL REDIRECTS:
-// This makes multiple requests, following each redirect until it reaches the
-// final destination.
-function get_redirect_final_target($url)
-{
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_NOBODY, 1);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // follow redirects
-    curl_setopt($ch, CURLOPT_AUTOREFERER, 1); // set referer on redirect
-    curl_exec($ch);
-    $target = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-    curl_close($ch);
-
-    if ($target) {
-        return $target;
-    }
-
-    return false;
 }
