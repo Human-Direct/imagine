@@ -7,7 +7,7 @@ namespace HumanDirect\Imagine;
  *
  * @package HumanDirect\Imagine
  */
-class UnsplashImage
+class UnsplashImage implements BackgroundImageInterface
 {
     public const SOURCE_PUBLIC = 'featured';
     public const SOURCE_PRIVATE_COLLECTION = 'private_collection';
@@ -19,7 +19,7 @@ class UnsplashImage
         self::SOURCE_RANDOM,
     ];
     private const SOURCE_URLS = [
-        self::SOURCE_PUBLIC => 'https://source.unsplash.com/featured?internet,office,computer',
+        self::SOURCE_PUBLIC => 'https://source.unsplash.com/featured/?internet,office,computer',
         self::SOURCE_PRIVATE_COLLECTION => 'https://source.unsplash.com/collection/1896279',
     ];
 
@@ -44,17 +44,17 @@ class UnsplashImage
     /**
      * @param string $source
      *
-     * @return UnsplashImage
+     * @return BackgroundImageInterface
      *
      * @throws \HumanDirect\Imagine\ImagineException
      */
-    public static function createFromSource(string $source): UnsplashImage
+    public static function createFromSource(string $source): BackgroundImageInterface
     {
         return new static($source);
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getUrl(): string
     {
