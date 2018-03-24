@@ -1,7 +1,7 @@
 <?php
 
 namespace HumanDirect\Imagine;
-use HumanDirect\Imagine\Theme\DefaultTheme;
+
 use HumanDirect\Imagine\Theme\ThemeInterface;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
@@ -54,19 +54,44 @@ class Imagine
             $this->canvas->setImageManager($this->manager);
         }
 
-        return $this->getTheme($themeName)->apply($this->canvas);
+        $theme = $this->getTheme($themeName);
+
+        return $this->canvas
+            ->create()
+            ->applyTheme($theme)
+            ->draw();
     }
 
     /**
      * Load themes.
-     *
-     * TODO: Scan themes directory for classes and load all of them.
      */
     private function loadThemes(): void
     {
-        $this->supportedThemes = [
-            new DefaultTheme()
-        ];
+        $themeNS = '\\HumanDirect\\Imagine\\Theme\\';
+        $directory = new \RecursiveDirectoryIterator(
+            __DIR__ . '/Theme',
+            \RecursiveDirectoryIterator::SKIP_DOTS
+        );
+        $files = new \RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) use ($themeNS) {
+            $className = str_replace('.php', '', $current->getFilename());
+            $isTheme = 'Theme' === substr($className, -5);
+
+            if (!$isTheme || $current->isDir() || $iterator->hasChildren()) {
+                return false;
+            }
+
+            $r = new \ReflectionClass($themeNS . $className);
+            if (!$r->isInstantiable()) {
+                return false;
+            }
+
+            return true;
+        });
+
+        foreach ($files as $file) {
+            $className = $themeNS . str_replace('.php', '', $file->getFilename());
+            $this->supportedThemes[] = new $className();
+        }
     }
 
     /**
@@ -78,7 +103,7 @@ class Imagine
      */
     private function getTheme(string $themeName): ThemeInterface
     {
-        foreach($this->supportedThemes as $theme) {
+        foreach ($this->supportedThemes as $theme) {
             if ($theme->hasName($themeName)) {
                 if ($theme instanceof ImageManagerAwareInterface) {
                     $theme->setImageManager($this->manager);

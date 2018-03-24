@@ -2,6 +2,7 @@
 
 namespace HumanDirect\Imagine;
 
+use HumanDirect\Imagine\Theme\ThemeInterface;
 use Intervention\Image\Constraint;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
@@ -62,6 +63,16 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
     private $image;
 
     /**
+     * @var bool
+     */
+    private $initialized = false;
+
+    /**
+     * @var bool
+     */
+    private $built = false;
+
+    /**
      * Canvas constructor.
      *
      * @param BackgroundImageInterface $bgImage
@@ -80,9 +91,37 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
      *
      * @throws \HumanDirect\Imagine\ImagineException
      */
-    public function create(): Image
+    public function create(): CanvasInterface
     {
         return $this->doCreate();
+    }
+
+    /**
+     * Apply theme.
+     *
+     * @param ThemeInterface $theme
+     *
+     * @return CanvasInterface
+     */
+    public function applyTheme(ThemeInterface $theme): CanvasInterface
+    {
+        $this->image = $theme->apply(
+            $this->image,
+            $this->getWidth(),
+            $this->getHeight()
+        );
+
+        return $this;
+    }
+
+    /**
+     * Draw final canvas.
+     *
+     * @throws \HumanDirect\Imagine\ImagineException
+     */
+    public function draw(): Image
+    {
+        return $this->doDraw();
     }
 
     /**
@@ -92,7 +131,7 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
      */
     public function getWidth(): int
     {
-        return $this->initWidth;
+        return $this->built ? $this->width : $this->initWidth;
     }
 
     /**
@@ -102,7 +141,7 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
      */
     public function getHeight(): int
     {
-        return $this->initHeight;
+        return $this->built ? $this->height : $this->initHeight;
     }
 
     /**
@@ -118,17 +157,27 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
     /**
      * Handle creation of canvas.
      *
-     * @return Image
+     * @return CanvasInterface
      *
      * @throws \HumanDirect\Imagine\ImagineException
-     *
-     * TODO: cropping should happen at the end, after theme is applied
      */
-    private function doCreate(): Image
+    private function doCreate(): CanvasInterface
     {
         $this->initialize();
         $this->build();
 
+        return $this;
+    }
+
+    /**
+     * Finalize canvas.
+     *
+     * @return Image
+     *
+     * @throws \HumanDirect\Imagine\ImagineException
+     */
+    private function doDraw(): Image
+    {
         if ($this->initWidth !== $this->width || $this->initHeight !== $this->height) {
             $this->image->resize($this->width, $this->height, function (Constraint $constraint) {
                 $constraint->aspectRatio();
@@ -159,6 +208,8 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
         foreach ($mediaTypes as $mediaType) {
             $this->addSupportedMediaType($mediaType);
         }
+
+        $this->initialized = true;
     }
 
     /**
@@ -176,7 +227,9 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
 
         $this->image = $this->manager
             ->make($this->backgroundImage->getUrl())
-            ->crop($this->initWidth, $this->initHeight);
+            ->fit($this->initWidth, $this->initHeight);
+
+        $this->built = true;
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace HumanDirect\Imagine\Theme;
 
-use HumanDirect\Imagine\Canvas;
 use Intervention\Image\Image;
 
 /**
@@ -11,13 +10,15 @@ use Intervention\Image\Image;
 interface ThemeInterface
 {
     /**
-     * Apply theme to canvas.
+     * Apply theme.
      *
-     * @param Canvas $canvas
+     * @param Image $image
+     * @param int   $width
+     * @param int   $height
      *
      * @return Image
      */
-    public function apply(Canvas $canvas): Image;
+    public function apply(Image $image, int $width, int $height): Image;
 
     /**
      * @param string $themeName

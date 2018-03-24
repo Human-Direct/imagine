@@ -9,9 +9,9 @@ use Intervention\Image\AbstractFont;
 use Intervention\Image\Image;
 
 /**
- * Class DefaultTheme.
+ * Class DefaultBoxedLeftTheme.
  */
-class DefaultTheme implements ThemeInterface, ImageManagerAwareInterface
+class DefaultBoxedLeftTheme implements ThemeInterface, ImageManagerAwareInterface
 {
     use ImageManagerAwareTrait;
 
@@ -30,7 +30,7 @@ class DefaultTheme implements ThemeInterface, ImageManagerAwareInterface
         $h = $height;
 
         $rectW = $w / 3;
-        $rectH = (int)floor($h * 0.6);
+        $rectH = (int)floor($h * 0.775);
         $image->rectangle(0, 0, $rectW, $rectH, function ($draw) {
             //$draw->background('rgba(27, 179, 219, 0.5)'); // light blue
             $draw->background('rgba(255, 255, 255, 0.8)');
@@ -39,7 +39,7 @@ class DefaultTheme implements ThemeInterface, ImageManagerAwareInterface
         $blueTopLeftX = 0;
         $blueTopLeftY = $h;
         $blueBottomRightX = $rectW;
-        $blueBottomRightY = abs((int)floor($h * 1.6) - $h);
+        $blueBottomRightY = abs((int)floor($h * 1.775) - $h);
         $image->rectangle($blueTopLeftX, $blueTopLeftY, $blueBottomRightX, $blueBottomRightY, function ($draw) {
             $draw->background('rgba(27, 179, 219, 0.8)'); // light blue
         });
@@ -69,12 +69,12 @@ class DefaultTheme implements ThemeInterface, ImageManagerAwareInterface
         });
 
         $description = 'How does it sound to develop the most innovative SD-WAN solution on the market?
-This Full Stack position encompasses the use of the latest frontend technologies (Angular 4, Node.js) with technical challenges concerning cloud centric, high scalability and performance.';
+This Full Stack position encompasses the use of the latest frontend technologies (Angular 4, Node.js) with technical challenges concerning cloud centric, high scalability and performance. This Full Stack position encompasses the use of the latest frontend technologies (Angular 4, Node.js) with technical challenges concerning cloud centric, high scalability and performance.';
 
         $descSize = 16;
 //$descPadTop = $titlePadTop + $titleSize + $padTop;
         $descPadTop = $titlePadTop - 10;
-        $image->text(Utils::wordwrap(Utils::truncate($description)), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
+        $image->text(Utils::wordwrap(Utils::truncate($description, 500)), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
             $font->file('fonts/SourceSansPro-Regular.otf');
             $font->size($descSize);
             $font->color('#000000');
@@ -85,10 +85,10 @@ This Full Stack position encompasses the use of the latest frontend technologies
 // consultant data
         $avatarInfo = Utils::getImageInfo('ana-small.jpg');
 
-        $avatarW = 120;
-        $avatarH = 120;
-        $avatarPadLeft = (int)floor(($rectW - $avatarW) / 2);
-        $avatarPadTop = $blueBottomRightY + 20;
+        $avatarW = 100;
+        $avatarH = 100;
+        $avatarPadLeft = $padLeft;
+        $avatarPadTop = $blueBottomRightY + 30;
 
         $avatar = $this->manager
             ->make($avatarInfo['path'])
@@ -99,23 +99,23 @@ This Full Stack position encompasses the use of the latest frontend technologies
         });
 
         $nameSize = 20;
-        $textPadLeft = $avatarPadLeft + (int)floor($avatarW / 2);
-        $namePadTop = $avatarPadTop + $avatarH + 20;
+        $textPadLeft = $avatarPadLeft + $avatarW + 15;
+        $namePadTop = $avatarPadTop;
         $image->text('Ana Sandu', $textPadLeft, $namePadTop, function (AbstractFont $font) use ($nameSize) {
             $font->file('fonts/SourceSansPro-Bold.otf');
             $font->size($nameSize);
             $font->color('#ffffff');
-            $font->align('center');
+            $font->align('left');
             $font->valign('top');
         });
 
         $infoSize = 18;
         $emailPadTop = $namePadTop + $nameSize + 20;
-        $image->text('ana.sandu@humandirect.eu', $textPadLeft, $emailPadTop, function (AbstractFont $font) use ($infoSize) {
+        $image->text('andreea.majeri@humandirect.eu', $textPadLeft, $emailPadTop, function (AbstractFont $font) use ($infoSize) {
             $font->file('fonts/SourceSansPro-Regular.otf');
             $font->size($infoSize);
             $font->color('#ffffff');
-            $font->align('center');
+            $font->align('left');
             $font->valign('top');
         });
         $phonePadTop = $emailPadTop + $infoSize + 5;
@@ -123,7 +123,7 @@ This Full Stack position encompasses the use of the latest frontend technologies
             $font->file('fonts/SourceSansPro-Regular.otf');
             $font->size($infoSize);
             $font->color('#ffffff');
-            $font->align('center');
+            $font->align('left');
             $font->valign('top');
         });
         $skypePadTop = $phonePadTop + $infoSize + 5;
@@ -131,7 +131,7 @@ This Full Stack position encompasses the use of the latest frontend technologies
             $font->file('fonts/SourceSansPro-Regular.otf');
             $font->size($infoSize);
             $font->color('#ffffff');
-            $font->align('center');
+            $font->align('left');
             $font->valign('top');
         });
 
@@ -143,6 +143,6 @@ This Full Stack position encompasses the use of the latest frontend technologies
      */
     public function hasName(string $themeName): bool
     {
-        return 'default' === $themeName;
+        return 'default-boxed-left' === $themeName;
     }
 }

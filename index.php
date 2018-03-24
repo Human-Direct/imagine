@@ -10,7 +10,9 @@ require_once 'vendor/autoload.php';
 
 $unsplashImage = UnsplashImage::createFromSource(UnsplashImage::SOURCE_RANDOM);
 
+$theme = $_GET['theme'] ?? 'default';
+
 $imagine = new Imagine();
-$image = $imagine->create($unsplashImage, Canvas::MEDIA_FB_HIGHLIGHTED_IMAGE, 'default');
+$image = $imagine->create($unsplashImage, Canvas::MEDIA_FB_HIGHLIGHTED_IMAGE, $theme);
 
 echo $image->response('jpg', 100);
