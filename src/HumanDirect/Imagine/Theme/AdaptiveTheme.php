@@ -48,6 +48,14 @@ class AdaptiveTheme extends AbstractTheme implements AdaptiveThemeInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getName(): string
+    {
+        return sprintf('%s-%s', parent::getName(), $this->theme->getName());
+    }
+
+    /**
      * Apply theme.
      *
      * @param Image $image
