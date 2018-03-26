@@ -62,16 +62,19 @@ class Utils
         $pattern = '/(?=\s)(.{1,' . $width . '})(?:\s|$)/uS';
         $replace = '$1' . $break;
 
-        return preg_replace($pattern, $replace, $string);
+        $return = preg_replace($pattern, $replace, $string);
+
+        return trim(preg_replace('/'.preg_quote($break, '/').'$/', '', $return)); // remove last break
     }
 
     /**
      * @param string $string
      * @param int    $desiredLength
+     * @param string $postfix
      *
      * @return string
      */
-    public static function truncate(string $string, int $desiredLength = 300): string
+    public static function truncate(string $string, int $desiredLength = 300, string $postfix = '...'): string
     {
         $parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
         $parts_count = \count($parts);
@@ -87,7 +90,9 @@ class Utils
             }
         }
 
-        return implode(\array_slice($parts, 0, $last_part)) . ($truncated ? ' ...' : '');
+        $postfix = $truncated && $postfix ? sprintf(' %s', $postfix) : '';
+
+        return trim(implode(\array_slice($parts, 0, $last_part)) . $postfix);
     }
 
     /**

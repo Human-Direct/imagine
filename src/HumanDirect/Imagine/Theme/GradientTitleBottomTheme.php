@@ -25,6 +25,7 @@ class GradientTitleBottomTheme extends AbstractTheme
         $w = $width;
         $h = $height;
 
+        $debug = (bool) $this->request->get('debug', false);
         $jobTitle = $this->request->get('jobTitle');
 
         $rectW = $w;
@@ -39,10 +40,10 @@ class GradientTitleBottomTheme extends AbstractTheme
 
         $titleSize = 40;
         $padLeft = 30;
-        $padTop = $rectY1 + ($rectH / 2) - (int)floor($titleSize * 1.3);
+        $padTop = $rectY1 + ($rectH / 2) - ($titleSize / 2);
 
         $logoPadLeft = $padLeft;
-        $logoPadTop = $rectY1 + (($rectH - $logoInfo['height']) / 2);
+        $logoPadTop = (int)floor($rectY1 + (($rectH - $logoInfo['height']) / 2));
 
         $whiteLogo = $this->manager
             ->make($logoInfo['path'])
@@ -56,7 +57,7 @@ class GradientTitleBottomTheme extends AbstractTheme
         $titlePadTop = $padTop;
 
         if (null !== $jobTitle) {
-            $image->text(Utils::wordwrap($jobTitle, 25), $titlePadLeft, $titlePadTop, function (AbstractFont $font) use ($titleSize) {
+            $image->text(Utils::wordwrap(Utils::truncate($jobTitle, 40, ''), 35), $titlePadLeft, $titlePadTop, function (AbstractFont $font) use ($titleSize) {
                 $font->file('fonts/SourceSansPro-Bold.otf');
                 $font->size($titleSize);
                 $font->color('#ffffff');

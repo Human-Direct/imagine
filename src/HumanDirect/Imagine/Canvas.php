@@ -190,9 +190,13 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
     private function doDraw(): Image
     {
         if ($this->initWidth !== $this->width || $this->initHeight !== $this->height) {
+//            $this->image->encode('data-url', 100);
+//            $this->image = $this->manager
+//                ->make($this->image->getEncoded());
+
             $this->image->resize($this->width, $this->height, function (Constraint $constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
+                //$constraint->aspectRatio();
+                //$constraint->upsize();
             });
         }
 
