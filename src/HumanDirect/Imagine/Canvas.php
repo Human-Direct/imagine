@@ -2,6 +2,7 @@
 
 namespace HumanDirect\Imagine;
 
+use HumanDirect\Imagine\Theme\AdaptiveThemeInterface;
 use HumanDirect\Imagine\Theme\ThemeInterface;
 use Intervention\Image\Constraint;
 use Intervention\Image\Image;
@@ -105,6 +106,14 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
      */
     public function applyTheme(ThemeInterface $theme): CanvasInterface
     {
+        if ($theme instanceof AdaptiveThemeInterface) {
+            $theme = $theme->decide(
+                $this->backgroundImage,
+                $this->getWidth(),
+                $this->getHeight()
+            );
+        }
+
         $this->image = $theme->apply(
             $this->image,
             $this->getWidth(),

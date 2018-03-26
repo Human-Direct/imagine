@@ -7,9 +7,9 @@ use Intervention\Image\AbstractFont;
 use Intervention\Image\Image;
 
 /**
- * Class DefaultTheme.
+ * Class BlueBoxLeftTheme.
  */
-class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
+class BlueBoxLeftTheme extends AbstractTheme implements PositionAwareThemeInterface
 {
     /**
      * Apply theme.
@@ -35,7 +35,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
         $usesAvatar = ($avatarInput && $avatarImageUrl && $avatarName && $avatarContact);
 
         $rectW = $w / 3;
-        $rectH = $usesAvatar ? (int)floor($h * 0.6) : $h;
+        $rectH = $usesAvatar ? (int)floor($h * 0.775) : $h;
         $image->rectangle(0, 0, $rectW, $rectH, function ($draw) {
             $draw->background('rgba(255, 255, 255, 0.8)');
         });
@@ -68,7 +68,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
         $descPadTop = $titlePadTop - 10;
 
         if (null !== $jobDescription) {
-            $image->text(Utils::wordwrap(Utils::truncate($jobDescription)), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
+            $image->text(Utils::wordwrap(Utils::truncate($jobDescription, 500)), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
                 $font->file('fonts/SourceSansPro-Regular.otf');
                 $font->size($descSize);
                 $font->color('#000000');
@@ -81,21 +81,21 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
             $blueTopLeftX = 0;
             $blueTopLeftY = $h;
             $blueBottomRightX = $rectW;
-            $blueBottomRightY = abs((int)floor($h * 1.6) - $h);
+            $blueBottomRightY = abs((int)floor($h * 1.775) - $h);
             $image->rectangle($blueTopLeftX, $blueTopLeftY, $blueBottomRightX, $blueBottomRightY, function ($draw) {
                 $draw->background('rgba(27, 179, 219, 0.8)'); // light blue
             });
 
-            $avatarW = 120;
-            $avatarH = 120;
+            $avatarW = 100;
+            $avatarH = 100;
+            $avatarPadLeft = $padLeft;
+            $avatarPadTop = $blueBottomRightY + 30;
 
             $nameTextSize = 20;
             $contactTextSize = 18;
 
-            $avatarPadLeft = (int)floor(($rectW - $avatarW) / 2);
-            $avatarPadTop = $blueBottomRightY + 20;
-            $textPadLeft = $avatarPadLeft + (int)floor($avatarW / 2);
-            $namePadTop = $avatarPadTop + $avatarH + 20;
+            $textPadLeft = $avatarPadLeft + $avatarW + 15;
+            $namePadTop = $avatarPadTop;
             $contactPadTop = $namePadTop + $nameTextSize + 20;
 
             $avatarInfo = Utils::getImageInfo($avatarImageUrl);
@@ -112,7 +112,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
                 $font->file('fonts/SourceSansPro-Bold.otf');
                 $font->size($nameTextSize);
                 $font->color('#ffffff');
-                $font->align('center');
+                $font->align('left');
                 $font->valign('top');
             });
 
@@ -122,7 +122,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
                     $font->file('fonts/SourceSansPro-Regular.otf');
                     $font->size($contactTextSize);
                     $font->color('#ffffff');
-                    $font->align('center');
+                    $font->align('left');
                     $font->valign('top');
                 });
                 $contactPadTop = $contactPadTop + $contactTextSize + 5;
@@ -134,7 +134,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
                     $font->file('fonts/SourceSansPro-Regular.otf');
                     $font->size($contactTextSize);
                     $font->color('#ffffff');
-                    $font->align('center');
+                    $font->align('left');
                     $font->valign('top');
                 });
                 $contactPadTop = $contactPadTop + $contactTextSize + 5;
@@ -146,7 +146,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
                     $font->file('fonts/SourceSansPro-Regular.otf');
                     $font->size($contactTextSize);
                     $font->color('#ffffff');
-                    $font->align('center');
+                    $font->align('left');
                     $font->valign('top');
                 });
             }

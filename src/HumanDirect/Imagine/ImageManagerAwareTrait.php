@@ -12,7 +12,7 @@ trait ImageManagerAwareTrait
     /**
      * @var ImageManager
      */
-    private $manager;
+    protected $manager;
 
     /**
      * @param ImageManager $manager

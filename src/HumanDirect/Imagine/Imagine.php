@@ -27,6 +27,11 @@ class Imagine
     private $supportedThemes;
 
     /**
+     * @var ThemeInterface[]
+     */
+    private $randomizableThemes;
+
+    /**
      * Imagine constructor.
      */
     public function __construct()
@@ -55,6 +60,9 @@ class Imagine
         }
 
         $theme = $this->getTheme($themeName);
+        if ($theme instanceof ImageManagerAwareInterface) {
+            $theme->setImageManager($this->manager);
+        }
 
         return $this->canvas
             ->create()
@@ -90,7 +98,13 @@ class Imagine
 
         foreach ($files as $file) {
             $className = $themeNS . str_replace('.php', '', $file->getFilename());
-            $this->supportedThemes[] = new $className();
+            /** @var ThemeInterface $object */
+            $object = new $className();
+            $this->supportedThemes[] = $object;
+
+            if ($object->supportsRandomization()) {
+                $this->randomizableThemes[] = $object;
+            }
         }
     }
 
@@ -103,12 +117,12 @@ class Imagine
      */
     private function getTheme(string $themeName): ThemeInterface
     {
+        if (ThemeInterface::RANDOM_THEME_NAME === $themeName) {
+            return $this->randomizableThemes[array_rand($this->randomizableThemes)];
+        }
+
         foreach ($this->supportedThemes as $theme) {
             if ($theme->hasName($themeName)) {
-                if ($theme instanceof ImageManagerAwareInterface) {
-                    $theme->setImageManager($this->manager);
-                }
-
                 return $theme;
             }
         }
