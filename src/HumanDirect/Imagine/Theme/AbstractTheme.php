@@ -5,7 +5,6 @@ namespace HumanDirect\Imagine\Theme;
 use HumanDirect\Imagine\ImageManagerAwareInterface;
 use HumanDirect\Imagine\ImageManagerAwareTrait;
 use HumanDirect\Imagine\Utils;
-use Monolog\Handler\Curl\Util;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
