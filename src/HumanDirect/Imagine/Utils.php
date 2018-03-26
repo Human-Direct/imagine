@@ -32,33 +32,16 @@ class Utils
     }
 
     /**
-     * @param string $type
-     *
-     * @return array
-     */
-    public static function getLogoInfo(string $type): array
-    {
-        $logo = 'hd-watermark-300w.png';
-        if ('horizontal' === $type) {
-            $logo = 'hd-horizontal-watermark-300w.png';
-        }
-
-        return self::getImageInfo($logo);
-    }
-
-    /**
      * @param string $imagePath
      *
      * @return array
      */
     public static function getImageInfo(string $imagePath): array
     {
-        $image = realpath(sprintf('images/%s', $imagePath));
-
-        [$width, $height, $type] = getimagesize($image);
+        [$width, $height, $type] = getimagesize($imagePath);
 
         return [
-            'path' => $image,
+            'path' => $imagePath,
             'width' => $width,
             'height' => $height,
             'type' => $type,
@@ -72,7 +55,7 @@ class Utils
      *
      * @return null|string|string[]
      */
-    public static function wordwrap(string $string, int $width = 45, string $break = "\n")
+    public static function wordwrap(string $string, int $width = 40, string $break = "\n")
     {
         // Anchor the beginning of the pattern with a lookahead
         // to avoid crazy backtracking when words are longer than $width
@@ -105,5 +88,35 @@ class Utils
         }
 
         return implode(\array_slice($parts, 0, $last_part)) . ($truncated ? ' ...' : '');
+    }
+
+    /**
+     * Get center coordinated of a shape.
+     *
+     * @see http://webdevzoom.com/get-center-of-polygon-triangle-and-area-using-javascript-and-php/
+     *
+     * @param array $coord
+     *
+     * @return mixed
+     */
+    public static function centroid(array $coord)
+    {
+        $centroid = array_reduce($coord, function ($x, $y) use ($coord) {
+            $len = \count($coord);
+
+            return [$x[0] + $y[0] / $len, $x[1] + $y[1] / $len];
+        }, [0, 0]);
+
+        return $centroid;
+    }
+
+    /**
+     * @param string $input
+     *
+     * @return string
+     */
+    public static function camelToKebab(string $input): string
+    {
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $input));
     }
 }

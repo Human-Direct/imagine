@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "human-direct",
+  "private_key_id": "6cbe5aa2ac7ab2b7084caa29192654146616779d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC5tkaGSjI8IKK8\nAnyVid9yGp4w2Q1FyP9uk7mnpo48CMJob55UH+ipt16/7v23WeEyqsstDeQRFG85\nJZCTm6SOVC8stUKnWNiXE/c8tmj7EvSU8PJoRGxI8PbP5GThJH5eyAnhXe8TkKas\nZ3EJYZrvNGT8puOSFbgWU+wysQB1s/+QOxk0XN8WCAdA8coROW0ulGTUq77xBFhT\ndXJqwdNWvu4XyzIJgdJZZVOJAO6MRyi/YKMDiUhkV2aj/edpkbsRylaRgLCIytFD\nQ3FvH6rY3Jdw0AVZ/ldfp6z7wgntc0nqQt648zSsiXjU2ZjIazC1MmkknoVC3Kqz\nspLmclG9AgMBAAECggEABa6pVUIPa+4OtKR51eSAUQA1/2YgxRYblLFR8KqEtxsI\ngcQKiuXoC0tYS5SfMD1AifmWWmROqmQe7Bd1Z0LPo+g5AkvwhGjQRb0fZzzolOgV\nUjpWHHEdhBTVZHKHUKk6caF6xenHHyjhpKxMld4l7LREc8OSen2OIqbCNyHZ0wAX\nxieibkw68p95rLbGjCfqg+nOC6Y4e8QnVpTQ1aXXOtHifu6YpdiHkEBnN/VCvgjn\nCBp5Eo/SHtC3vL6PXM6ndYPi01m7x2l52Blac+ANjb5tcdRV+0v0Pu9R88r3rzyw\njo+pCSdO2KMGKoXjdTQB8pEAJ8dvWZw2p4uaUyt0MQKBgQDv0Kjl/3qAdsILrNN4\nFV0O95AN2j4cjgYGZLMGw9PcGRMUa34vRDPe9WGBqM9yYL6R9QlcXTXywxiNQ5iG\nf4PWR3L8EF0TxZ4q7zJapdotq5Z05IAeMHzzZMaPTnYDZkhergoP1NIS2ghfoj4W\nsboXjM6DXkxOsjg8seXUDKUWUQKBgQDGPt1aDqjz8eoO1PJWlqi81hxAEXg+13ha\ntib/z9LicWSSrs95YPgbkbkjwjHXqwU2oEZWgfRkdBrPGreEbAwCMg6KghbMI7A9\nUH+0O06wnqy4toiL5ZBiv9ub2/f+NCNA3ck3ePFagzWDmbCbc0kAD+rHc1PTC2JM\nJI48+xYtrQKBgQDbjc0TxLICqrc8uR1h8y0fZscb55K10dDySX8d0mtENjChoUgF\nPgu/NCfw7Pv/W1MdjZjkVvHtL3Bq5Fffyx6ILyG2Y8TTNTl5VURkeTMmXNGCczBY\nc0vyCXFAAjVJJ3taMzxDAjTRzYudAoyVemFE7kSjQNHbuo6CAtzHJkx+AQKBgCbE\nhGToGQIbfLoJyppEPBsxg7TDtdAUMuUKWfYMniDKK/DDXq9N1zcM+DeV8klKmGpm\nTVr9bt12FwgJIXoz5uVHBLDxX6PsFrrm0xJbxrejUAOPLoStD98/xaJlEcoUSBCX\nTpIahJg+sGhb1b2QfeYVNsRqOSo8P6zEOUyTjXLBAoGAJJr2E+97Ot8RC5kZGP+k\nHYhEC7sx0eDcTf8oJ77/84ta0cl6aASlU284a0cCcjeXxuwHg5F10oYrfGcd/QNn\nV0rczKKToF/q8M0jp1o8u78Tk++B123qzrtoD/VR/1DFvy7+1TnJj8H12l4oM5eB\nG0Kwvtm5d0o6zCouL2l/jRI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "hd-imagine@human-direct.iam.gserviceaccount.com",
+  "client_id": "108804939498334650663",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/hd-imagine%40human-direct.iam.gserviceaccount.com"
+}
