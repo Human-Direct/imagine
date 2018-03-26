@@ -25,6 +25,7 @@ class BlueBoxRightTheme extends AbstractTheme implements PositionAwareThemeInter
         $w = $width;
         $h = $height;
 
+        $debug = (bool) $this->request->get('debug', false);
         $jobTitle = $this->request->get('jobTitle');
         $jobDescription = $this->request->get('jobDescription');
 
@@ -32,9 +33,11 @@ class BlueBoxRightTheme extends AbstractTheme implements PositionAwareThemeInter
         $avatarImageUrl = $avatarInput['image'] ?? null;
         $avatarName = $avatarInput['name'] ?? null;
         $avatarContact = $avatarInput['contact'] ?? null;
-        $usesAvatar = ($avatarInput && $avatarImageUrl && $avatarName && $avatarContact);
 
-        $rectW = $w / 3;
+        $showAvatar = (bool) $this->request->get('showAvatar', true);
+        $usesAvatar = ($showAvatar && $avatarInput && $avatarImageUrl && $avatarName && $avatarContact);
+
+        $rectW = (int)ceil($w / 3);
         $rectH = $usesAvatar ? (int)floor($h * 0.775) : $h;
         $rectLeft = $w - $rectW;
         $image->rectangle($rectLeft, 0, $w, $rectH, function ($draw) {
@@ -52,30 +55,39 @@ class BlueBoxRightTheme extends AbstractTheme implements PositionAwareThemeInter
         $image->insert($logoInfo['path'], 'top-left', $logoPadLeft, $logoPadTop);
 
         $textPadLeft = $rectLeft + $padLeft;
-        $titlePadTop = $padTop * 3 + $logoInfo['height'] / 2;
+        $titlePadTop = $logoPadTop + $logoInfo['height'] + $padTop * 1.5;
         $titleSize = 24;
 
         if (null !== $jobTitle) {
-            $image->text(Utils::wordwrap($jobTitle, 25), $textPadLeft, $titlePadTop, function (AbstractFont $font) use ($titleSize) {
+            $image->text(Utils::wordwrap(Utils::truncate($jobTitle, 58), 25), $textPadLeft, $titlePadTop, function (AbstractFont $font) use ($titleSize) {
                 $font->file('fonts/SourceSansPro-Bold.otf');
                 $font->size($titleSize);
                 $font->color('rgb(43, 57, 132)');
                 $font->align('left');
-                $font->valign('top');
+                $font->valign('middle');
             });
+
+            if ($debug) {
+                $this->drawControlRectangle($image, $textPadLeft, $titlePadTop, $w - 30, $titlePadTop + $titleSize * 2);
+            }
         }
 
-        $descSize = 16;
-        $descPadTop = $titlePadTop - 10;
+        $descSize = 20;
+        $descPadTop = $titlePadTop + $titleSize * 2 + $padTop * 1.5;
 
         if (null !== $jobDescription) {
-            $image->text(Utils::wordwrap(Utils::truncate($jobDescription, 500)), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
+            $jdTextLimit = $usesAvatar ? 400 : 650;
+            $image->text(Utils::wordwrap(Utils::truncate($jobDescription, $jdTextLimit), 32), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
                 $font->file('fonts/SourceSansPro-Regular.otf');
                 $font->size($descSize);
                 $font->color('#000000');
                 $font->align('left');
-                $font->valign('top');
+                $font->valign('bottom');
             });
+
+            if ($debug) {
+                $this->drawControlRectangle($image, $textPadLeft, $descPadTop, $w - 30, $rectH - 30);
+            }
         }
 
         if ($usesAvatar) {
