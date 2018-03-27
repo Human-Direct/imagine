@@ -120,7 +120,7 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
             $this->getHeight()
         );
 
-        header('X-Theme: ' . $theme->getName());
+        //header('X-Theme: ' . $theme->getName());
 
         return $this;
     }

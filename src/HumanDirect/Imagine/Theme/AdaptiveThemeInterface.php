@@ -16,7 +16,7 @@ interface AdaptiveThemeInterface extends ThemeInterface
      * @param int                      $canvasWidth
      * @param int                      $canvasHeight
      *
-     * @return PositionAwareThemeInterface
+     * @return ThemeInterface
      */
-    public function decide(BackgroundImageInterface $bgImage, int $canvasWidth, int $canvasHeight): PositionAwareThemeInterface;
+    public function decide(BackgroundImageInterface $bgImage, int $canvasWidth, int $canvasHeight): ThemeInterface;
 }

@@ -12,6 +12,13 @@ use Intervention\Image\Image;
  */
 class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
 {
+    protected $superiorBoxBgColor = 'rgba(255, 255, 255, 0.8)';
+    protected $inferiorBoxBgColor = 'rgba(27, 179, 219, 0.8)'; // brand light blue
+    protected $titleTextColor = 'rgb(43, 57, 132)';
+    protected $jdTextColor = '#000000';
+    protected $avatarImgBorderColor = 'rgb(43, 57, 132)'; // brand dark blue
+    protected $avatarTextColor = '#ffffff';
+
     /**
      * Apply theme.
      *
@@ -40,8 +47,8 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
 
         $rectW = (int)ceil($w / 3);
         $rectH = $usesAvatar ? (int)floor($h * 0.6) : $h;
-        $image->rectangle(0, 0, $rectW, $rectH, function ($draw) {
-            $draw->background('rgba(255, 255, 255, 0.8)');
+        $image->rectangle(0, 0, $rectW, $rectH, function (AbstractShape $draw) {
+            $draw->background($this->superiorBoxBgColor);
         });
 
         $logoPath = realpath('images/hd-horizontal-watermark-300w.png');
@@ -59,13 +66,14 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
         $titleSize = 24;
 
         if (null !== $jobTitle) {
-            $image->text(Utils::wordwrap(Utils::truncate($jobTitle, 58), 25), $textPadLeft, $titlePadTop, function (AbstractFont $font) use ($titleSize) {
+            $titleCallback = function (AbstractFont $font) use ($titleSize) {
                 $font->file('fonts/SourceSansPro-Bold.otf');
                 $font->size($titleSize);
-                $font->color('rgb(43, 57, 132)');
+                $font->color($this->titleTextColor);
                 $font->align('left');
                 $font->valign('middle');
-            });
+            };
+            $image->text(Utils::wordwrap(Utils::truncate($jobTitle, 58), 25), $textPadLeft, $titlePadTop, $titleCallback);
 
             if ($debug) {
                 $this->drawControlRectangle($image, $textPadLeft, $titlePadTop, $rectW - 30, $titlePadTop + $titleSize * 2);
@@ -76,14 +84,15 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
         $descPadTop = $titlePadTop + $titleSize * 2 + $padTop * 1.5;
 
         if (null !== $jobDescription) {
-            $jdTextLimit = $usesAvatar ? 225 : 650;
-            $image->text(Utils::wordwrap(Utils::truncate($jobDescription, $jdTextLimit), 32), $textPadLeft, $descPadTop, function (AbstractFont $font) use ($descSize) {
+            $jdCallback = function (AbstractFont $font) use ($descSize) {
                 $font->file('fonts/SourceSansPro-Regular.otf');
                 $font->size($descSize);
-                $font->color('#000000');
+                $font->color($this->jdTextColor);
                 $font->align('left');
                 $font->valign('bottom');
-            });
+            };
+            $jdTextLimit = $usesAvatar ? 225 : 650;
+            $image->text(Utils::wordwrap(Utils::truncate($jobDescription, $jdTextLimit), 32), $textPadLeft, $descPadTop, $jdCallback);
 
             if ($debug) {
                 $this->drawControlRectangle($image, $textPadLeft, $descPadTop, $rectW - 30, $rectH - 30);
@@ -96,7 +105,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
             $blueBottomRightX = $rectW;
             $blueBottomRightY = abs((int)floor($h * 1.6) - $h);
             $image->rectangle($blueTopLeftX, $blueTopLeftY, $blueBottomRightX, $blueBottomRightY, function (AbstractShape $draw) {
-                $draw->background('rgba(27, 179, 219, 0.8)'); // light blue
+                $draw->background($this->inferiorBoxBgColor);
             });
 
             $avatarW = 120;
@@ -118,13 +127,13 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
 
             $image->insert($avatar, 'top-left', $avatarPadLeft, $avatarPadTop);
             $image->rectangle($avatarPadLeft, $avatarPadTop, $avatarPadLeft + $avatarW, $avatarPadTop + $avatarH, function (AbstractShape $draw) {
-                $draw->border(2, 'rgb(43, 57, 132)');
+                $draw->border(2, $this->avatarImgBorderColor);
             });
 
             $image->text($avatarName, $textPadLeft, $namePadTop, function (AbstractFont $font) use ($nameTextSize) {
                 $font->file('fonts/SourceSansPro-Bold.otf');
                 $font->size($nameTextSize);
-                $font->color('#ffffff');
+                $font->color($this->avatarTextColor);
                 $font->align('center');
                 $font->valign('top');
             });
@@ -134,7 +143,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
                 $image->text($email, $textPadLeft, $contactPadTop, function (AbstractFont $font) use ($contactTextSize) {
                     $font->file('fonts/SourceSansPro-Regular.otf');
                     $font->size($contactTextSize);
-                    $font->color('#ffffff');
+                    $font->color($this->avatarTextColor);
                     $font->align('center');
                     $font->valign('top');
                 });
@@ -146,7 +155,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
                 $image->text($phone, $textPadLeft, $contactPadTop, function (AbstractFont $font) use ($contactTextSize) {
                     $font->file('fonts/SourceSansPro-Regular.otf');
                     $font->size($contactTextSize);
-                    $font->color('#ffffff');
+                    $font->color($this->avatarTextColor);
                     $font->align('center');
                     $font->valign('top');
                 });
@@ -158,7 +167,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
                 $image->text('Skype: '.$skype, $textPadLeft, $contactPadTop, function (AbstractFont $font) use ($contactTextSize) {
                     $font->file('fonts/SourceSansPro-Regular.otf');
                     $font->size($contactTextSize);
-                    $font->color('#ffffff');
+                    $font->color($this->avatarTextColor);
                     $font->align('center');
                     $font->valign('top');
                 });
