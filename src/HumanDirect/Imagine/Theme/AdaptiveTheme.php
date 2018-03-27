@@ -24,6 +24,15 @@ class AdaptiveTheme extends AbstractTheme implements AdaptiveThemeInterface
      */
     private $theme;
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $dir = __DIR__; // workaround for xDebug, __DIR__ is overwritten during a debug session!
+        $serviceAccountKey = \dirname($dir) . '/Human-Direct-6cbe5aa2ac7a.json';
+        putenv("GOOGLE_APPLICATION_CREDENTIALS=$serviceAccountKey");
+    }
+
     /**
      * Decide what theme to use.
      *
@@ -31,9 +40,9 @@ class AdaptiveTheme extends AbstractTheme implements AdaptiveThemeInterface
      * @param int                      $canvasWidth
      * @param int                      $canvasHeight
      *
-     * @return PositionAwareThemeInterface
+     * @return ThemeInterface
      */
-    public function decide(BackgroundImageInterface $bgImage, int $canvasWidth, int $canvasHeight): PositionAwareThemeInterface
+    public function decide(BackgroundImageInterface $bgImage, int $canvasWidth, int $canvasHeight): ThemeInterface
     {
         $this->loadThemes();
 
@@ -46,14 +55,6 @@ class AdaptiveTheme extends AbstractTheme implements AdaptiveThemeInterface
 
         return $this->theme;
     }
-
-//    /**
-//     * @inheritdoc
-//     */
-//    public function getName(): string
-//    {
-//        return sprintf('%s-%s', parent::getName(), $this->theme->getName());
-//    }
 
     /**
      * Apply theme.

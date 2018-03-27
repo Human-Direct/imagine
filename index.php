@@ -10,9 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 require_once 'vendor/autoload.php';
 
-$serviceAccountKey = realpath('Human-Direct-6cbe5aa2ac7a.json');
-putenv("GOOGLE_APPLICATION_CREDENTIALS=$serviceAccountKey");
-
 $request = Request::createFromGlobals();
 $theme = $request->get('theme', ThemeInterface::RANDOM_THEME_NAME);
 $mediaType = $request->get('size', Canvas::MEDIA_FB_HIGHLIGHTED_IMAGE);

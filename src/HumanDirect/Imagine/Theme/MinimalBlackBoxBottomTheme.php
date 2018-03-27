@@ -4,13 +4,17 @@ namespace HumanDirect\Imagine\Theme;
 
 use HumanDirect\Imagine\Utils;
 use Intervention\Image\AbstractFont;
+use Intervention\Image\AbstractShape;
 use Intervention\Image\Image;
 
 /**
- * Class GradientTitleBottomTheme.
+ * Class MinimalBlackBoxBottomTheme.
  */
-class GradientTitleBottomTheme extends AbstractTheme
+class MinimalBlackBoxBottomTheme extends AbstractTheme
 {
+    protected $boxBgColor = 'rgba(0, 0, 0, 0.5)';
+    protected $titleTextColor = '#ffffff';
+
     /**
      * Apply theme.
      *
@@ -31,8 +35,8 @@ class GradientTitleBottomTheme extends AbstractTheme
         $rectW = $w;
         $rectH = (int)floor($h * 0.15);
         $rectY1 = abs($rectH - $h);
-        $image->rectangle(0, $rectY1, $rectW, $h, function ($draw) {
-            $draw->background('rgba(0, 0, 0, 0.5)');
+        $image->rectangle(0, $rectY1, $rectW, $h, function (AbstractShape $draw) {
+            $draw->background($this->boxBgColor);
         });
 
         $logoPath = realpath('images/hd-horizontal-watermark-300w.png');
@@ -57,13 +61,25 @@ class GradientTitleBottomTheme extends AbstractTheme
         $titlePadTop = $padTop;
 
         if (null !== $jobTitle) {
-            $image->text(Utils::wordwrap(Utils::truncate($jobTitle, 40, ''), 35), $titlePadLeft, $titlePadTop, function (AbstractFont $font) use ($titleSize) {
+            $titleCallback = function (AbstractFont $font) use ($titleSize) {
                 $font->file('fonts/SourceSansPro-Bold.otf');
                 $font->size($titleSize);
-                $font->color('#ffffff');
+                $font->color($this->titleTextColor);
                 $font->align('right');
                 $font->valign('top');
-            });
+            };
+            $image->text(Utils::wordwrap(Utils::truncate($jobTitle, 40, ''), 35), $titlePadLeft, $titlePadTop, $titleCallback);
+
+            if ($debug) {
+                $this->drawControlRectangle(
+                    $image,
+                    $logoPadLeft + $logoInfo['width'] + $padLeft,
+                    $titlePadTop,
+                    $rectW - 30,
+                    $titlePadTop + $titleSize,
+                    '255, 255, 255'
+                );
+            }
         }
 
         return $image;

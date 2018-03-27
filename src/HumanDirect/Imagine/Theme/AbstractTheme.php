@@ -49,18 +49,19 @@ abstract class AbstractTheme implements ThemeInterface, ImageManagerAwareInterfa
     }
 
     /**
-     * @param Image $image
-     * @param int   $x1
-     * @param int   $y1
-     * @param int   $x2
-     * @param int   $y2
+     * @param Image  $image
+     * @param int    $x1
+     * @param int    $y1
+     * @param int    $x2
+     * @param int    $y2
+     * @param string $rgbColor
      */
-    protected function drawControlRectangle(Image $image, int $x1, int $y1, int $x2, int $y2): void
+    protected function drawControlRectangle(Image $image, int $x1, int $y1, int $x2, int $y2, string $rgbColor = '0, 0, 0'): void
     {
         $border = 2;
-        $image->rectangle($x1, $y1, $x2, $y2, function (AbstractShape $draw) use ($border) {
-            $draw->border($border, 'rgba(0, 0, 0, 0.5)');
-            $draw->background('rgba(0, 0, 0, 0.3)');
+        $image->rectangle($x1, $y1, $x2, $y2, function (AbstractShape $draw) use ($border, $rgbColor) {
+            $draw->border($border, 'rgba('.$rgbColor.', 0.5)');
+            $draw->background('rgba('.$rgbColor.', 0.3)');
         });
     }
 }
