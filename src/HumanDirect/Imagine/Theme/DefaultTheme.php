@@ -51,7 +51,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
             $draw->background($this->superiorBoxBgColor);
         });
 
-        $logoPath = realpath('images/hd-horizontal-watermark-300w.png');
+        $logoPath = $this->getImagePath('hd-horizontal-watermark-300w.png');
         $logoInfo = Utils::getImageInfo($logoPath);
 
         $padLeft = 30;
@@ -67,7 +67,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
 
         if (null !== $jobTitle) {
             $titleCallback = function (AbstractFont $font) use ($titleSize) {
-                $font->file('fonts/SourceSansPro-Bold.otf');
+                $font->file($this->getFontPath('SourceSansPro-Bold.otf'));
                 $font->size($titleSize);
                 $font->color($this->titleTextColor);
                 $font->align('left');
@@ -85,7 +85,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
 
         if (null !== $jobDescription) {
             $jdCallback = function (AbstractFont $font) use ($descSize) {
-                $font->file('fonts/SourceSansPro-Regular.otf');
+                $font->file($this->getFontPath('SourceSansPro-Regular.otf'));
                 $font->size($descSize);
                 $font->color($this->jdTextColor);
                 $font->align('left');
@@ -131,7 +131,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
             });
 
             $image->text($avatarName, $textPadLeft, $namePadTop, function (AbstractFont $font) use ($nameTextSize) {
-                $font->file('fonts/SourceSansPro-Bold.otf');
+                $font->file($this->getFontPath('SourceSansPro-Bold.otf'));
                 $font->size($nameTextSize);
                 $font->color($this->avatarTextColor);
                 $font->align('center');
@@ -141,7 +141,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
             $email = $avatarContact['email'] ?? null;
             if ($email) {
                 $image->text($email, $textPadLeft, $contactPadTop, function (AbstractFont $font) use ($contactTextSize) {
-                    $font->file('fonts/SourceSansPro-Regular.otf');
+                    $font->file($this->getFontPath('SourceSansPro-Regular.otf'));
                     $font->size($contactTextSize);
                     $font->color($this->avatarTextColor);
                     $font->align('center');
@@ -153,7 +153,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
             $phone = $avatarContact['phone'] ?? null;
             if ($phone) {
                 $image->text($phone, $textPadLeft, $contactPadTop, function (AbstractFont $font) use ($contactTextSize) {
-                    $font->file('fonts/SourceSansPro-Regular.otf');
+                    $font->file($this->getFontPath('SourceSansPro-Regular.otf'));
                     $font->size($contactTextSize);
                     $font->color($this->avatarTextColor);
                     $font->align('center');
@@ -165,7 +165,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
             $skype = $avatarContact['skype'] ?? null;
             if ($skype) {
                 $image->text('Skype: '.$skype, $textPadLeft, $contactPadTop, function (AbstractFont $font) use ($contactTextSize) {
-                    $font->file('fonts/SourceSansPro-Regular.otf');
+                    $font->file($this->getFontPath('SourceSansPro-Regular.otf'));
                     $font->size($contactTextSize);
                     $font->color($this->avatarTextColor);
                     $font->align('center');
