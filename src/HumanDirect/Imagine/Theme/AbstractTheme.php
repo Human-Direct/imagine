@@ -22,11 +22,19 @@ abstract class AbstractTheme implements ThemeInterface, ImageManagerAwareInterfa
     protected $request;
 
     /**
+     * @var string
+     */
+    protected $rootPath;
+
+    /**
      * AbstractTheme constructor.
      */
     public function __construct()
     {
         $this->request = Request::createFromGlobals();
+
+        $dir = __DIR__; // workaround for xDebug, __DIR__ is overwritten during a debug session!
+        $this->rootPath = \dirname($dir, 4) . '/';
     }
 
     /**
@@ -46,6 +54,26 @@ abstract class AbstractTheme implements ThemeInterface, ImageManagerAwareInterfa
     public function hasName(string $themeName): bool
     {
         return $this->getName() === $themeName;
+    }
+
+    /**
+     * @param string $image
+     *
+     * @return string
+     */
+    protected function getImagePath(string $image): string
+    {
+        return sprintf('%s/images/%s', $this->rootPath, $image);
+    }
+
+    /**
+     * @param string $font
+     *
+     * @return string
+     */
+    protected function getFontPath(string $font): string
+    {
+        return sprintf('%s/fonts/%s', $this->rootPath, $font);
     }
 
     /**

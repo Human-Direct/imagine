@@ -39,7 +39,7 @@ class MinimalBlackBoxBottomTheme extends AbstractTheme
             $draw->background($this->boxBgColor);
         });
 
-        $logoPath = realpath('images/hd-horizontal-watermark-300w.png');
+        $logoPath = $this->getImagePath('hd-horizontal-watermark-300w.png');
         $logoInfo = Utils::getImageInfo($logoPath);
 
         $titleSize = 40;
@@ -62,7 +62,7 @@ class MinimalBlackBoxBottomTheme extends AbstractTheme
 
         if (null !== $jobTitle) {
             $titleCallback = function (AbstractFont $font) use ($titleSize) {
-                $font->file('fonts/SourceSansPro-Bold.otf');
+                $font->file($this->getFontPath('SourceSansPro-Bold.otf'));
                 $font->size($titleSize);
                 $font->color($this->titleTextColor);
                 $font->align('right');
