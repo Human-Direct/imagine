@@ -4,6 +4,8 @@ namespace HumanDirect\Imagine;
 
 use HumanDirect\Imagine\Theme\AdaptiveThemeInterface;
 use HumanDirect\Imagine\Theme\ThemeInterface;
+use Intervention\Image\AbstractFont;
+use Intervention\Image\AbstractShape;
 use Intervention\Image\Constraint;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
@@ -11,9 +13,9 @@ use Intervention\Image\ImageManager;
 /**
  * Class Canvas.
  */
-class Canvas implements CanvasInterface, ImageManagerAwareInterface
+class Canvas implements CanvasInterface, ImageManagerAwareInterface, RequestAwareInterface
 {
-    use ImageManagerAwareTrait;
+    use ImageManagerAwareTrait, RequestAwareTrait;
 
     public const MEDIA_FB_SHARED_IMAGE = 'facebook_shared_image';
     public const MEDIA_FB_SHARED_LINK = 'facebook_shared_link';
@@ -22,6 +24,7 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
     public const MEDIA_TW_SHARED_LINK = 'twitter_shared_link';
     public const MEDIA_LI_SHARED_IMAGE = 'linkedin_shared_image';
     public const MEDIA_LI_SHARED_LINK = 'linkedin_shared_link';
+    public const MEDIA_DEFAULT_SIZE = self::MEDIA_FB_SHARED_LINK;
 
     /**
      * @var BackgroundImageInterface
@@ -200,6 +203,32 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
             });
         }
 
+        $debug = (bool) $this->request->get('debug', false);
+        if ($debug) {
+            $w = $this->image->getWidth();
+            $h = $this->image->getHeight();
+            $midX = (int)floor($w/2);
+            $midH = (int)floor($h/2);
+            $sizeFontSize = 20;
+
+            $this->image->rectangle($midX-55, $midH-25, $midX+55, $midH+25, function (AbstractShape $draw) {
+                $draw->border(2, 'rgba(255, 255, 255, 0.8)');
+                $draw->background('rgba(255, 255, 255, 0.5)');
+            });
+
+            $sizeCallback = function (AbstractFont $font) use ($sizeFontSize) {
+                $dir = __DIR__;
+                $rootPath = \dirname($dir, 3) . '/';
+
+                $font->file(sprintf('%s/fonts/%s', $rootPath, 'SourceSansPro-Bold.otf'));
+                $font->size($sizeFontSize);
+                $font->color('#000000');
+                $font->align('center');
+                $font->valign('top');
+            };
+            $this->image->text(sprintf('%s X %s', $w, $h), $midX, $midH-10, $sizeCallback);
+        }
+
         return $this->image;
     }
 
@@ -235,14 +264,15 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface
     private function build(): void
     {
         // init dimensions are the largest possible
-        [$this->initWidth, $this->initHeight] = $this->getMediaType(self::MEDIA_FB_HIGHLIGHTED_IMAGE)->getDimensions();
+        [$this->initWidth, $this->initHeight] = $this->getMediaType(self::MEDIA_DEFAULT_SIZE)->getDimensions();
 
         // final dimensions of the image
         [$this->width, $this->height] = $this->getMediaType($this->mediaType)->getDimensions();
 
         $this->image = $this->manager
             ->make($this->backgroundImage->getUrl())
-            ->fit($this->initWidth, $this->initHeight);
+            ->fit($this->initWidth, $this->initHeight)
+            ->crop($this->initWidth, $this->initHeight);
 
         $this->built = true;
     }

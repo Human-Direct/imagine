@@ -5,12 +5,15 @@ namespace HumanDirect\Imagine;
 use HumanDirect\Imagine\Theme\ThemeInterface;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class Imagine.
  */
-class Imagine
+class Imagine implements RequestAwareInterface
 {
+    use RequestAwareTrait;
+
     /**
      * @var Canvas
      */
@@ -33,9 +36,12 @@ class Imagine
 
     /**
      * Imagine constructor.
+     *
+     * @param Request $request
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
+        $this->setRequest($request);
         $this->manager = new ImageManager(['driver' => 'imagick']);
 
         $this->loadThemes();
@@ -58,10 +64,16 @@ class Imagine
         if ($this->canvas instanceof ImageManagerAwareInterface) {
             $this->canvas->setImageManager($this->manager);
         }
+        if ($this->canvas instanceof RequestAwareInterface) {
+            $this->canvas->setRequest($this->request);
+        }
 
         $theme = $this->getTheme($themeName);
         if ($theme instanceof ImageManagerAwareInterface) {
             $theme->setImageManager($this->manager);
+        }
+        if ($theme instanceof RequestAwareInterface) {
+            $theme->setRequest($this->request);
         }
 
         return $this->canvas
@@ -89,17 +101,14 @@ class Imagine
             }
 
             $r = new \ReflectionClass($themeNS . $className);
-            if (!$r->isInstantiable()) {
-                return false;
-            }
 
-            return true;
+            return $r->isInstantiable();
         });
 
         foreach ($files as $file) {
             $className = $themeNS . str_replace('.php', '', $file->getFilename());
             /** @var ThemeInterface $object */
-            $object = new $className();
+            $object = new $className($this->request);
             $this->supportedThemes[] = $object;
 
             if ($object->supportsRandomization()) {

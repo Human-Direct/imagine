@@ -4,6 +4,8 @@ namespace HumanDirect\Imagine\Theme;
 
 use HumanDirect\Imagine\ImageManagerAwareInterface;
 use HumanDirect\Imagine\ImageManagerAwareTrait;
+use HumanDirect\Imagine\RequestAwareInterface;
+use HumanDirect\Imagine\RequestAwareTrait;
 use HumanDirect\Imagine\Utils;
 use Intervention\Image\AbstractShape;
 use Intervention\Image\Image;
@@ -12,14 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class AbstractTheme.
  */
-abstract class AbstractTheme implements ThemeInterface, ImageManagerAwareInterface
+abstract class AbstractTheme implements ThemeInterface, ImageManagerAwareInterface, RequestAwareInterface
 {
-    use ImageManagerAwareTrait;
-
-    /**
-     * @var Request
-     */
-    protected $request;
+    use ImageManagerAwareTrait, RequestAwareTrait;
 
     /**
      * @var string
@@ -31,8 +28,6 @@ abstract class AbstractTheme implements ThemeInterface, ImageManagerAwareInterfa
      */
     public function __construct()
     {
-        $this->request = Request::createFromGlobals();
-
         $dir = __DIR__; // workaround for xDebug, __DIR__ is overwritten during a debug session!
         $this->rootPath = \dirname($dir, 4) . '/';
     }

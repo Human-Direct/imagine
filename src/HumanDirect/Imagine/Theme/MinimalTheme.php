@@ -5,6 +5,7 @@ namespace HumanDirect\Imagine\Theme;
 use HumanDirect\Imagine\BackgroundImageInterface;
 use HumanDirect\Imagine\ImageManagerAwareInterface;
 use HumanDirect\Imagine\ImagineException;
+use HumanDirect\Imagine\RequestAwareInterface;
 use Intervention\Image\Image;
 
 /**
@@ -38,6 +39,9 @@ class MinimalTheme extends AbstractTheme implements AdaptiveThemeInterface
         $this->theme = $this->getTheme();
         if ($this->theme instanceof ImageManagerAwareInterface) {
             $this->theme->setImageManager($this->manager);
+        }
+        if ($this->theme instanceof RequestAwareInterface) {
+            $this->theme->setRequest($this->request);
         }
 
         return $this->theme;

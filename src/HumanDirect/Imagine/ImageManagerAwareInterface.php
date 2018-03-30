@@ -1,6 +1,7 @@
 <?php
 
 namespace HumanDirect\Imagine;
+
 use Intervention\Image\ImageManager;
 
 /**
