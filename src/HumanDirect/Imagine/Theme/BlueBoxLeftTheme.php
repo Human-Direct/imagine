@@ -46,7 +46,7 @@ class BlueBoxLeftTheme extends AbstractTheme implements PositionAwareThemeInterf
         $usesAvatar = ($showAvatar && $avatarInput && $avatarImageUrl && $avatarName && $avatarContact);
 
         $rectW = (int)ceil($w / 3);
-        $rectH = $usesAvatar ? (int)floor($h * 0.775) : $h;
+        $rectH = $usesAvatar ? (int)floor($h * 0.75) : $h;
 
         $image->rectangle(0, 0, $rectW, $rectH, function (AbstractShape $draw) {
             $draw->background($this->superiorBoxBgColor);
@@ -83,10 +83,10 @@ class BlueBoxLeftTheme extends AbstractTheme implements PositionAwareThemeInterf
         }
 
         $descSize = 20;
-        $descPadTop = $titlePadTop + $titleSize * 2 + $padTop * 1.5;
+        $descPadTop = $titlePadTop + $titleSize * 2 + $padTop;
 
         if (null !== $jobDescription) {
-            $jdTextLimit = $usesAvatar ? 400 : 650;
+            $jdTextLimit = $usesAvatar ? 345 : 580;
             $jdCallback = function (AbstractFont $font) use ($descSize) {
                 $font->file($this->getFontPath('SourceSansPro-Regular.otf'));
                 $font->size($descSize);
@@ -106,7 +106,7 @@ class BlueBoxLeftTheme extends AbstractTheme implements PositionAwareThemeInterf
             $blueTopLeftX = 0;
             $blueTopLeftY = $h;
             $blueBottomRightX = $rectW;
-            $blueBottomRightY = abs((int)floor($h * 1.775) - $h);
+            $blueBottomRightY = abs((int)floor($h * 1.75) - $h);
             $image->rectangle($blueTopLeftX, $blueTopLeftY, $blueBottomRightX, $blueBottomRightY, function (AbstractShape $draw) {
                 $draw->background($this->inferiorBoxBgColor);
             });

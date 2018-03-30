@@ -19,7 +19,6 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface, RequestAwar
 
     public const MEDIA_FB_SHARED_IMAGE = 'facebook_shared_image';
     public const MEDIA_FB_SHARED_LINK = 'facebook_shared_link';
-    public const MEDIA_FB_HIGHLIGHTED_IMAGE = 'facebook_highlighted_image';
     public const MEDIA_TW_SHARED_IMAGE = 'twitter_shared_image';
     public const MEDIA_TW_SHARED_LINK = 'twitter_shared_link';
     public const MEDIA_LI_SHARED_IMAGE = 'linkedin_shared_image';
@@ -242,7 +241,6 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface, RequestAwar
         $mediaTypes = MediaTypeFactory::createMultiple([
             [self::MEDIA_FB_SHARED_IMAGE, 1200, 630],
             [self::MEDIA_FB_SHARED_LINK, 1200, 630],
-            [self::MEDIA_FB_HIGHLIGHTED_IMAGE, 1200, 717],
             [self::MEDIA_TW_SHARED_IMAGE, 1024, 512],
             [self::MEDIA_TW_SHARED_LINK, 520, 254],
             [self::MEDIA_LI_SHARED_IMAGE, 520, 320],
