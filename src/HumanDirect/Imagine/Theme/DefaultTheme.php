@@ -46,7 +46,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
         $usesAvatar = ($showAvatar && $avatarInput && $avatarImageUrl && $avatarName && $avatarContact);
 
         $rectW = (int)ceil($w / 3);
-        $rectH = $usesAvatar ? (int)floor($h * 0.6) : $h;
+        $rectH = $usesAvatar ? (int)floor($h * 0.55) : $h;
         $image->rectangle(0, 0, $rectW, $rectH, function (AbstractShape $draw) {
             $draw->background($this->superiorBoxBgColor);
         });
@@ -81,7 +81,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
         }
 
         $descSize = 20;
-        $descPadTop = $titlePadTop + $titleSize * 2 + $padTop * 1.5;
+        $descPadTop = $titlePadTop + $titleSize * 2 + $padTop;
 
         if (null !== $jobDescription) {
             $jdCallback = function (AbstractFont $font) use ($descSize) {
@@ -91,7 +91,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
                 $font->align('left');
                 $font->valign('bottom');
             };
-            $jdTextLimit = $usesAvatar ? 225 : 650;
+            $jdTextLimit = $usesAvatar ? 160 : 580;
             $image->text(Utils::wordwrap(Utils::truncate($jobDescription, $jdTextLimit), 32), $textPadLeft, $descPadTop, $jdCallback);
 
             if ($debug) {
@@ -103,7 +103,7 @@ class DefaultTheme extends AbstractTheme implements PositionAwareThemeInterface
             $blueTopLeftX = 0;
             $blueTopLeftY = $h;
             $blueBottomRightX = $rectW;
-            $blueBottomRightY = abs((int)floor($h * 1.6) - $h);
+            $blueBottomRightY = abs((int)floor($h * 1.55) - $h);
             $image->rectangle($blueTopLeftX, $blueTopLeftY, $blueBottomRightX, $blueBottomRightY, function (AbstractShape $draw) {
                 $draw->background($this->inferiorBoxBgColor);
             });
