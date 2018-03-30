@@ -12,10 +12,10 @@ require_once 'vendor/autoload.php';
 
 $request = Request::createFromGlobals();
 $theme = $request->get('theme', ThemeInterface::RANDOM_THEME_NAME);
-$mediaType = $request->get('size', Canvas::MEDIA_FB_HIGHLIGHTED_IMAGE);
+$mediaType = $request->get('size', Canvas::MEDIA_DEFAULT_SIZE);
 
 $unsplashImage = UnsplashImage::createFromSource(UnsplashImage::SOURCE_RANDOM);
-$imagine = new Imagine();
+$imagine = new Imagine($request);
 $image = $imagine->create($unsplashImage, $mediaType, $theme);
 
 header('X-Original-Image-URL: ' . $unsplashImage->getUrl());

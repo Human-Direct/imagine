@@ -6,6 +6,7 @@ use Google\Cloud\Vision\VisionClient;
 use HumanDirect\Imagine\BackgroundImageInterface;
 use HumanDirect\Imagine\ImageManagerAwareInterface;
 use HumanDirect\Imagine\ImagineException;
+use HumanDirect\Imagine\RequestAwareInterface;
 use HumanDirect\Imagine\Utils;
 use Intervention\Image\Image;
 
@@ -24,6 +25,9 @@ class AdaptiveTheme extends AbstractTheme implements AdaptiveThemeInterface
      */
     private $theme;
 
+    /**
+     * AdaptiveTheme constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -51,6 +55,9 @@ class AdaptiveTheme extends AbstractTheme implements AdaptiveThemeInterface
         $this->theme = $this->getTheme($position);
         if ($this->theme instanceof ImageManagerAwareInterface) {
             $this->theme->setImageManager($this->manager);
+        }
+        if ($this->theme instanceof RequestAwareInterface) {
+            $this->theme->setRequest($this->request);
         }
 
         return $this->theme;
