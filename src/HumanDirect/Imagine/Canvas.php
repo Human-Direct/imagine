@@ -23,7 +23,7 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface, RequestAwar
     public const MEDIA_TW_SHARED_LINK = 'twitter_shared_link';
     public const MEDIA_LI_SHARED_IMAGE = 'linkedin_shared_image';
     public const MEDIA_LI_SHARED_LINK = 'linkedin_shared_link';
-    public const MEDIA_DEFAULT_SIZE = self::MEDIA_FB_SHARED_LINK;
+    public const MEDIA_DEFAULT_SIZE = self::MEDIA_LI_SHARED_LINK;
 
     /**
      * @var BackgroundImageInterface
@@ -192,14 +192,7 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface, RequestAwar
     private function doDraw(): Image
     {
         if ($this->initWidth !== $this->width || $this->initHeight !== $this->height) {
-//            $this->image->encode('data-url', 100);
-//            $this->image = $this->manager
-//                ->make($this->image->getEncoded());
-
-            $this->image->resize($this->width, $this->height, function (Constraint $constraint) {
-                //$constraint->aspectRatio();
-                //$constraint->upsize();
-            });
+            $this->image->resize($this->width, $this->height);
         }
 
         $debug = (bool) $this->request->get('debug', false);
@@ -210,7 +203,7 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface, RequestAwar
             $midH = (int)floor($h/2);
             $sizeFontSize = 20;
 
-            $this->image->rectangle($midX-55, $midH-25, $midX+55, $midH+25, function (AbstractShape $draw) {
+            $this->image->rectangle($midX-55, $midH-45, $midX+55, $midH+25, function (AbstractShape $draw) {
                 $draw->border(2, 'rgba(255, 255, 255, 0.8)');
                 $draw->background('rgba(255, 255, 255, 0.5)');
             });
@@ -225,7 +218,8 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface, RequestAwar
                 $font->align('center');
                 $font->valign('top');
             };
-            $this->image->text(sprintf('%s X %s', $w, $h), $midX, $midH-10, $sizeCallback);
+            $this->image->text(sprintf('%s X %s', $w, $h), $midX, $midH-30, $sizeCallback);
+            $this->image->text(sprintf('%s:%s', round($w/$h, 2), 1), $midX, $midH-10, $sizeCallback);
         }
 
         return $this->image;
@@ -244,7 +238,7 @@ class Canvas implements CanvasInterface, ImageManagerAwareInterface, RequestAwar
             [self::MEDIA_TW_SHARED_IMAGE, 1024, 512],
             [self::MEDIA_TW_SHARED_LINK, 520, 254],
             [self::MEDIA_LI_SHARED_IMAGE, 520, 320],
-            [self::MEDIA_LI_SHARED_LINK, 520, 272]
+            [self::MEDIA_LI_SHARED_LINK, 1200, 627]
         ]);
 
         foreach ($mediaTypes as $mediaType) {
