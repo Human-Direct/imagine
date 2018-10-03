@@ -66,6 +66,7 @@ class WeAreHiringBlackTheme extends AbstractTheme
             };
             $image->text('We\'re Hiring', floor($rectW/2), floor($rectH/2)-($titleSize+floor($wereHiringSize*1.2))-$padCenterTop, $wereHiringCallback);
 
+            // job title
             $titleCallback = function (AbstractFont $font) use ($titleSize) {
                 $font->file($this->getFontPath('SourceSansPro-Light.otf'));
                 $font->size($titleSize);
@@ -73,9 +74,20 @@ class WeAreHiringBlackTheme extends AbstractTheme
                 $font->align('center');
                 $font->valign('top');
             };
-            $prepText = Utils::wordwrap(Utils::truncate($jobTitle, 40, ''), 35);
             $titlePadTop = floor($rectH/2)-$titleSize-$padCenterTop;
-            $image->text($prepText, floor($rectW/2), $titlePadTop, $titleCallback);
+
+            // inserts character where string is to be split into new line (keeping words intact)
+            $titleLength = \count($jobTitle);
+            $maxCharLimit = 28;
+            $titleCharLimit = ($titleLength > $maxCharLimit) ? ceil($titleLength/2) : $maxCharLimit;
+            $splittedJobTitle = wordwrap($jobTitle, $titleCharLimit, '\n');
+            // create array of lines
+            $titleLines = explode('\n', $splittedJobTitle);
+
+            foreach ($titleLines as $titleLine) {
+                $image->text($titleLine, floor($rectW/2), $titlePadTop, $titleCallback);
+                $titlePadTop = $titlePadTop + $titleSize + 2; // shift top position down
+            }
 
             if (null !== $location || null !== $jobCode) {
                 $subtitleCallback = function (AbstractFont $font) use ($subtitleSize) {
