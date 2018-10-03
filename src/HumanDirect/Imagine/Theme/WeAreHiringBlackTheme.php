@@ -46,14 +46,15 @@ class WeAreHiringBlackTheme extends AbstractTheme
         $padRight = $padLeft;
         $wereHiringSize = 60;
         $titleSize = 60;
-        $subtitleSize = 20;
+        $subtitleSize = 25;
         $padCenterTop = 20;
 
         $logoPath = $this->getImagePath('hd-horizontal-watermark-300w.png');
         $logoInfo = Utils::getImageInfo($logoPath);
         $logoHeight = $logoInfo['height'];
+        $sepH = 5;
         $sepY1 = abs($rectH - $logoHeight*2);
-        $sepY2 = $sepY1 - 7;
+        $sepY2 = $sepY1 - $sepH;
 
         if (null !== $jobTitle) {
             // we're hiring text
