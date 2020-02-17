@@ -78,7 +78,7 @@ class WeAreHiringBlackTheme extends AbstractTheme
             $titlePadTop = floor($rectH/2)-$titleSize-$padCenterTop;
 
             // inserts character where string is to be split into new line (keeping words intact)
-            $titleLength = \count($jobTitle);
+            $titleLength = \strlen($jobTitle);
             $maxCharLimit = 28;
             $titleCharLimit = ($titleLength > $maxCharLimit) ? ceil($titleLength/2) : $maxCharLimit;
             $splittedJobTitle = wordwrap($jobTitle, $titleCharLimit, '\n');
