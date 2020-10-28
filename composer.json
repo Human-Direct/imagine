@@ -14,7 +14,7 @@
         "unsplash/unsplash": "^2.4",
         "intervention/image": "^2.4",
         "google/cloud-vision": "^0.10.2",
-        "symfony/http-foundation": "^3.0 || ^4.0"
+        "symfony/http-foundation": "^3.0 || ^4.0 || ^5.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0"
